@@ -6,7 +6,7 @@ build-backend = "hatchling.build"
 name = "MLE3112"
 version = "2025.02.01"
 dependencies = [
-    'MLE3112 @ git+https://github.com/dengzeyu/NUS_experiment.git',
+    'NUS_experiment @ git+https://github.com/dengzeyu/NUS_experiment.git',
 ]
 authors=[{name="Zeyu Deng",email="dengzeyu@gmail.com"}]
 maintainers=[{name = "Zeyu Deng",email="dengzeyu@gmail.com"}]
