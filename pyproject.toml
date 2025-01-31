@@ -12,6 +12,8 @@ description="MLE3112 Course Package"
 readme = "README.md"
 requires-python = ">=3.8"
 dependencies = [
-  "unisweep @ git+https://github.com/dengzeyu/NUS_experiment@main"
+  "unisweep @ git+https://github.com/dengzeyu/NUS_experiment@main",
+  "jupyter",
+  
 ]
 
