@@ -8,8 +8,8 @@ version = "2025.02.01"
 dependencies = [
     'MLE3112 @ git+https://github.com/dengzeyu/NUS_experiment.git',
 ]
-authors=[{"name":"Zeyu Deng","email":"dengzeyu@gmail.com"}]
-maintainers=[{"name":"Zeyu Deng","email":"dengzeyu@gmail.com"}]
+authors=[{name:"Zeyu Deng",email:"dengzeyu@gmail.com"}]
+maintainers=[{name:"Zeyu Deng",email:"dengzeyu@gmail.com"}]
 license="MIT"
 description="MLE3112 Course Package"
 readme = "README.md"
