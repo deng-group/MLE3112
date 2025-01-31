@@ -37,8 +37,7 @@ def measurement_single_filter(serial_number:str,
     measured_data = []
     print(f'Setting the initial positions to {start}...')
     drive_motor(position=start, serial_number=serial_number, tol=1e-3, max_num_failure=max_num_failure)
-    for position in np.arange(start, end + step, step):
-        print(f"Setting the position to: {position}")
+    for position in np.unique(np.arange(start, end + step, step) % 360):
         drive_motor(position=position, serial_number=serial_number)
         wavelength, intensity = drive_spectrometer()
         measured_data.append([position, wavelength, intensity])
@@ -77,11 +76,11 @@ def measurement_three_filters(ser1:str, ser2:str, ser3:str,
     drive_motor(position=start, ser=ser2, tol=1e-3, max_num_failure=max_num_failure)
     drive_motor(position=start, ser=ser3, tol=1e-3, max_num_failure=max_num_failure)
 
-    for pos1 in np.arange(start, end + step, step):
+    for pos1 in np.unique(np.arange(start, end + step, step) % 360):
         drive_motor(position=pos1, ser=ser1, tol=1e-3, max_num_failure=max_num_failure)
-        for pos2 in np.arange(start, end + step, step):
+        for pos2 in np.unique(np.arange(start, end + step, step) % 360):
             drive_motor(position=pos2, ser=ser2, tol=1e-3, max_num_failure=max_num_failure)
-            for pos3 in np.arange(start, end + step, step):
+            for pos3 in np.unique(np.arange(start, end + step, step) % 360):
                 print(f"Setting the positions to: {pos1}, {pos2}, {pos3}")
                 drive_motor(position=pos3, ser=ser3, tol=1e-3, max_num_failure=max_num_failure)
 
