@@ -42,6 +42,10 @@ Connect your computer to the spectrometer using the USB cable. Then open `Avasof
 - Run `conda activate mle3112`
 
 ### Install the required packages
+- Activate the virtual environment that we have created
+```shell
+conda activate mle3112
+```
 - Run the command below to install required packages, make sure you have installed [git for windows](#pre-requisite)
 ```shell
 pip install git+https://github.com/deng-group/MLE3112.git
