@@ -7,7 +7,7 @@ name = "MLE3112"
 version = "2025.02.01"
 authors=[{name="Zeyu Deng",email="dengzeyu@gmail.com"}]
 maintainers=[{name = "Zeyu Deng",email="dengzeyu@gmail.com"}]
-license-files = ["LICEN[CS]E*"]
+license = "MIT"
 description="MLE3112 Course Package"
 readme = "README.md"
 requires-python = ">=3.8"
