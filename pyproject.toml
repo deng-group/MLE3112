@@ -11,8 +11,7 @@ license = {text = "MIT"}
 description="MLE3112 Course Package"
 readme = "README.md"
 requires-python = ">=3.8"
-
-[tool.setuptools.dynamic]
-dependencies = {file = "requirements.txt"}
-
+dependencies = [
+  "NUS_experiment @ git+https://github.com/dengzeyu/NUS_experiment@main"
+]
 
