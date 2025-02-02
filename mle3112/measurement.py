@@ -111,6 +111,6 @@ def measurement_three_filters(ser1:str, ser2:str, ser3:str,
 
                 wavelength, intensity = drive_spectrometer(integration_time,avaspecx64_dll_path)
                 measured_data.append([pos1, pos2, pos3, wavelength, intensity])
-                measured_data.append([pos1, pos2, pos3, wavelength, intensity])
+                
     df = pd.DataFrame(measured_data, columns=['position1', 'position2', 'position3', 'wavelength', 'intensity'])
     df.to_csv(data_file)
