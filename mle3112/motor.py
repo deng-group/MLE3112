@@ -42,15 +42,19 @@ def drive_motor(position: float, serial_number: str, tol: float = 1e-3,
 def _drive_motor(position: float, serial_number: str, tol: float = 1e-3, kinesis_path = 'C:/Program Files/Thorlabs/Kinesis')->None:
     """
     Drives the motor to the specified position and waits until it reaches the desired tolerance.
+
     Args:
         position (float): The target position to move the motor to.
         serial_number (str): The serial number or identifier for the motor.
         tol (float, optional): The tolerance within which the motor should reach the target position. Defaults to 1e-3.
         kinesis_path (str, optional): The path to the Kinesis folder. Defaults to 'C:/Program Files/Thorlabs/Kinesis'.
+
     Returns:
         None
+
     Raises:
         Exception: If there is an issue with the motor or communication.
+        
     Notes:
         This function uses the KDC101 device from the Kinesis library to control the motor.
         It continuously checks the motor's position and waits until it is within the specified tolerance.
