@@ -9,7 +9,7 @@ import time
 
 def drive_motor(position: float, serial_number: str, tol: float = 1e-3,
                 max_num_failure:int=10, 
-                kinesis_path:str =  'C:/Program Files/Thorlabs/Kinesis')->None:
+                kinesis_path:str = 'C:/Program Files/Thorlabs/Kinesis')->None:
     """
     Drives the motor to the specified position.
 
@@ -60,9 +60,9 @@ def _drive_motor(position: float, serial_number: str, tol: float = 1e-3, kinesis
     device = KDC101(serial_number, kinesis_path)
     device.set_position(position)
 
-    while abs((position - device.position() + 180) % 360 - 180) > tol:
-        time.sleep(0.5)
+    while abs((position - device.position() + 180) % 360 - 180) > tol: # The motor position is in the range of 0 to 360 degrees
+        time.sleep(0.5) # wait for 0.5 seconds
         print(f"Waiting for the motor ({serial_number}) to go to position: {position}, current position {device.position()}")
-    time.sleep(1)
+    time.sleep(1) # wait for 1 second
     print(f'Final motor: {serial_number} at position: {device.position()}')
     device.close()

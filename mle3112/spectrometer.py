@@ -5,7 +5,7 @@ Email: dengzeyu@gmail.com
 
 from devices.Avaspec import Avaspec
 
-def drive_spectrometer(avaspecx64_dll_path:str = 'C:/AvaSpecX64-DLL_9.14.0.0/avaspecx64.dll') -> tuple:
+def drive_spectrometer(integration_time:float = 100.0, avaspecx64_dll_path:str = 'C:/AvaSpecX64-DLL_9.14.0.0/avaspecx64.dll') -> tuple:
     """
     Drives the spectrometer to measure and return wavelength and data.
 
@@ -14,6 +14,7 @@ def drive_spectrometer(avaspecx64_dll_path:str = 'C:/AvaSpecX64-DLL_9.14.0.0/ava
     processes them into lists of floats.
 
     Args:
+        integration_time (float, optional): The integration time in milliseconds. Default is 100 ms.
         avaspecx64_dll_path (str, optional): The path to the avaspecx64.dll file. Default is 'C:/AvaSpecX64-DLL_9.14.0.0/avaspecx64.dll'.
 
     Returns:
@@ -22,7 +23,7 @@ def drive_spectrometer(avaspecx64_dll_path:str = 'C:/AvaSpecX64-DLL_9.14.0.0/ava
             - data (list of float): The list of measured data values.
     """
     device = Avaspec(avaspecx64_dll_path = avaspecx64_dll_path)
-    device.set_integration_time(100) # in ms
+    device.set_integration_time(integration_time) # in ms
     data_raw = device.data()
     print('Measuring ...')
     data = [float(i) for i in data_raw.split(",")]
