@@ -37,9 +37,6 @@ def plot(data_file: str,
     # Compute adsorptance
     df['adsorptance'] = 1 - df[integrated_intensity_col_name] / df[integrated_intensity_col_name].max()
     
-    # Plot adsorptance
-    plt.plot(df['position'], df['adsorptance'], 's-', markersize=8, linewidth=2, label='Adsorptance')
-
     print(df)
 
     # Customize the plot
