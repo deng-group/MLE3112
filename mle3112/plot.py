@@ -7,32 +7,19 @@ import pandas as pd
 import ast
 import numpy as np
 
-def plot(data_file:str, 
-        wavelength_col_name: str = 'wavelength',
-        intensity_col_name:str = 'intensity',
-        integrated_intensity_col_name:str='integrated_intensity',
-        plot_all_spectrum:bool = False)->None:
+def plot(data_file: str, 
+         wavelength_col_name: str = 'wavelength',
+         intensity_col_name: str = 'intensity',
+         integrated_intensity_col_name: str = 'integrated_intensity',
+         plot_all_spectrum: bool = False) -> None:
     """
-    Reads data from data_file, processes it, and generates plots.
-    The function performs the following steps:
-    1. Reads data from data_file into a pandas DataFrame.
-    2. Converts the 'data' and 'wavelength' columns from string representations of lists to actual lists.
-    3. Integrates the 'data' over the 'wavelength' for each row using the trapezoidal rule.
-    4. Prints the DataFrame with the integrated data.
-    5. Creates and saves a plot of 'position' vs 'integrated' data.
-    6. For each unique position, creates and saves a plot of 'wavelength' vs 'data'.
-    The generated plots are saved as 'integrated.png' and 'spectrum_position_<pos>.png' where <pos> is the position value.
-
+    Plots integrated intensity and adsorptance from a CSV file containing spectral data.
     Parameters:
-    data_file (str): The path to the CSV file containing the data.
-    wavelength_col_name (str): The name of the column containing the wavelength data.
-    intensity_col_name (str): The name of the column containing the intensity data.
-    integrated_intensity_col_name (str): The name of the column to store the integrated intensity data.
-    plot_all_spectrum (bool): Whether to plot the spectrum for all unique positions. Default is False.
-
-    Note:
-    - The data_file file should have columns: 'position', 'data', and 'wavelength'.
-    - The 'data' and 'wavelength' columns should contain string representations of lists.
+    data_file (str): Path to the CSV file containing the data.
+    wavelength_col_name (str): Column name for wavelength data. Default is 'wavelength'.
+    intensity_col_name (str): Column name for intensity data. Default is 'intensity'.
+    integrated_intensity_col_name (str): Column name for integrated intensity data. Default is 'integrated_intensity'.
+    plot_all_spectrum (bool): If True, plots the spectrum for all unique positions. Default is False.
     Returns:
     None
     """
@@ -42,7 +29,7 @@ def plot(data_file:str,
     df[wavelength_col_name] = df[wavelength_col_name].apply(lambda x: ast.literal_eval(x))
     # integrate wavelength 
     df[integrated_intensity_col_name] = df.apply(lambda row: np.trapz(y=row[intensity_col_name], x=row[wavelength_col_name]), axis=1)
-    print(df)
+    
     
     # Create the plot
     plt.figure(figsize=(5, 5))
@@ -52,6 +39,9 @@ def plot(data_file:str,
     
     # Plot adsorptance
     plt.plot(df['position'], df['adsorptance'], 's-', markersize=8, linewidth=2, label='Adsorptance')
+
+    print(df)
+
     # Customize the plot
     # Create a second y-axis for adsorptance
     ax1 = plt.gca()
