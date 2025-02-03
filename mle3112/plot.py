@@ -7,36 +7,63 @@ import pandas as pd
 import ast
 import numpy as np
 
-def plot():
+def plot(data_file:str, 
+        wavelength_col_name: str = 'wavelength',
+        intensity_col_name:str = 'intensity',
+        integrated_intensity_col_name:str='integrated_intensity',
+        plot_all_spectrum:bool = False)->None:
     """
-    Reads data from 'data.csv', processes it, and generates plots.
+    Reads data from data_file, processes it, and generates plots.
     The function performs the following steps:
-    1. Reads data from 'data.csv' into a pandas DataFrame.
+    1. Reads data from data_file into a pandas DataFrame.
     2. Converts the 'data' and 'wavelength' columns from string representations of lists to actual lists.
     3. Integrates the 'data' over the 'wavelength' for each row using the trapezoidal rule.
     4. Prints the DataFrame with the integrated data.
     5. Creates and saves a plot of 'position' vs 'integrated' data.
     6. For each unique position, creates and saves a plot of 'wavelength' vs 'data'.
     The generated plots are saved as 'integrated.png' and 'spectrum_position_<pos>.png' where <pos> is the position value.
+
+    Parameters:
+    data_file (str): The path to the CSV file containing the data.
+    wavelength_col_name (str): The name of the column containing the wavelength data.
+    intensity_col_name (str): The name of the column containing the intensity data.
+    integrated_intensity_col_name (str): The name of the column to store the integrated intensity data.
+    plot_all_spectrum (bool): Whether to plot the spectrum for all unique positions. Default is False.
+
     Note:
-    - The 'data.csv' file should have columns: 'position', 'data', and 'wavelength'.
+    - The data_file file should have columns: 'position', 'data', and 'wavelength'.
     - The 'data' and 'wavelength' columns should contain string representations of lists.
     Returns:
     None
     """
     # read data
-    df = pd.read_csv('data.csv', index_col=0)
-    df['data'] = df['data'].apply(lambda x: ast.literal_eval(x))
-    df['wavelength'] = df['wavelength'].apply(lambda x: ast.literal_eval(x))
+    df = pd.read_csv(data_file, index_col=0)
+    df[intensity_col_name] = df[intensity_col_name].apply(lambda x: ast.literal_eval(x))
+    df[wavelength_col_name] = df[wavelength_col_name].apply(lambda x: ast.literal_eval(x))
     # integrate wavelength 
-    df['integrated'] = df.apply(lambda row: np.trapz(y=row['data'], x=row['wavelength']), axis=1)
+    df[integrated_intensity_col_name] = df.apply(lambda row: np.trapz(y=row[intensity_col_name], x=row[wavelength_col_name]), axis=1)
     print(df)
     
     # Create the plot
     plt.figure(figsize=(5, 5))
-    plt.plot(df['position'], df['integrated'], 'o-', markersize=8, linewidth=2, label='Integrated Data')
+    plt.plot(df['position'], df[integrated_intensity_col_name], 'o-', markersize=8, linewidth=2, label='Integrated Data')
+    # Compute adsorptance
+    df['adsorptance'] = 1 - df[integrated_intensity_col_name] / df[integrated_intensity_col_name].max()
     
+    # Plot adsorptance
+    plt.plot(df['position'], df['adsorptance'], 's-', markersize=8, linewidth=2, label='Adsorptance')
     # Customize the plot
+    # Create a second y-axis for adsorptance
+    ax1 = plt.gca()
+    ax2 = ax1.twinx()
+    ax2.plot(df['position'], df['adsorptance'], 's-', markersize=8, linewidth=2, color='orange', label='Adsorptance')
+    ax2.set_ylabel('Adsorptance', fontsize=14)
+    ax2.tick_params(axis='y', labelsize=14)
+    
+    # Add legends for both y-axes
+    lines_1, labels_1 = ax1.get_legend_handles_labels()
+    lines_2, labels_2 = ax2.get_legend_handles_labels()
+    ax1.legend(lines_1 + lines_2, labels_1 + labels_2, loc='best')
     plt.xlabel('Position (degrees)', fontsize=14)
     plt.ylabel('Integrated Data (a.u.)', fontsize=14)
     plt.title('Position vs Integrated Data', fontsize=16)
@@ -46,26 +73,28 @@ def plot():
     plt.tight_layout()
     
     # Save the plot
-    plt.savefig('integrated.png', dpi=300)
-    # Plot the spectrum for a few positions
-    positions_to_plot = df['position'].unique()  # Plot all unique positions
+    plt.savefig('integrated.pdf')
 
-    for pos in positions_to_plot:
-        df_pos = df[df['position'] == pos]
-        if not df_pos.empty:
-            plt.figure(figsize=(5, 5))
-            for index, row in df_pos.iterrows():
-                plt.plot(row['wavelength'], row['data'], label=f'Position {row["position"]} degrees')
-            
-            plt.xlabel('Wavelength (nm)', fontsize=14)
-            plt.ylabel('Intensity (a.u.)', fontsize=14)
-            plt.title(f'Spectrum at Position {pos} degrees', fontsize=16)
-            plt.grid(True, which='both', linestyle='--', linewidth=0.5)
-            plt.tight_layout()
-            
-            # Save the plot
-            plt.savefig(f'spectrum_position_{pos}.png', dpi=300)
-            plt.close()
+    if plot_all_spectrum:
+        # Plot the spectrum for a few positions
+        positions_to_plot = df['position'].unique()  # Plot all unique positions
+
+        for pos in positions_to_plot:
+            df_pos = df[df['position'] == pos]
+            if not df_pos.empty:
+                plt.figure(figsize=(5, 5))
+                for index, row in df_pos.iterrows():
+                    plt.plot(row['wavelength'], row['data'], label=f'Position {row["position"]} degrees')
+
+                plt.xlabel('Wavelength (nm)', fontsize=14)
+                plt.ylabel('Intensity (a.u.)', fontsize=14)
+                plt.title(f'Spectrum at Position {pos} degrees', fontsize=16)
+                plt.grid(True, which='both', linestyle='--', linewidth=0.5)
+                plt.tight_layout()
+
+                # Save the plot
+                plt.savefig(f'spectrum_position_{pos}.png', dpi=300)
+                plt.close()
     
 def plot_three_filters():
     """
