@@ -53,12 +53,11 @@ def measurement_single_filter(serial_number:str,
     progress.show_msg(message=f'Starting measurements.. Data will be saved to: {data_file}' )
     
     position = start
-
+    step_count = 0
     if not dry_run:
         progress.update(step_count, message=f"Move motor to start positions: {position}")
         drive_motor(start, serial_number, tol, max_num_failure, kinesis_path)
 
-    step_count = 0
     for position in np.unique(np.arange(start, end + step, step) % 360):
         step_count += 1
         progress.update(step_count, message=f"Measuring at position: {position}")
@@ -127,14 +126,14 @@ def measurement_three_filters(ser1:str, ser2:str, ser3:str,
     progress = Progress(total_steps)
 
     progress.show_msg(message=f'Starting measurements.. Data will be saved to: {data_file}' )
-    
+    step_count = 0
     if not dry_run:
         progress.update(step_count, message=f"Move motor to start positions: {pos1}, {pos2}, {pos3}")
         drive_motor(start, ser1, tol, max_num_failure, kinesis_path)
         drive_motor(start, ser2, tol, max_num_failure, kinesis_path)
         drive_motor(start, ser3, tol, max_num_failure, kinesis_path)
     pos1, pos2, pos3 = start, start, start
-    step_count = 0
+    
     for pos1 in np.unique(np.arange(start, end + step, step) % 360):
         if not dry_run:
             drive_motor(pos1, ser1, tol, max_num_failure, kinesis_path)
