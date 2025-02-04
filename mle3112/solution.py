@@ -80,7 +80,7 @@ def plot(data_file: str, positions:list) -> None:
     This function reads a CSV file specified by the data_file parameter. It expects the CSV to contain columns such as 'intensity', 'wavelength', and 'position'.
     The 'intensity' and 'wavelength' columns are expected to be in string format that can be converted to Python objects using ast.literal_eval.
     For each unique position in the data, the function plots the spectral data, labeling the plot with the position value.
-    It configures the plot with axis labels, a title, and a grid, then saves the plot as a PNG file named 'spectrum_position_<position>.png'.
+    It configures the plot with axis labels, a title, and a grid, then saves the plot as a pdf file named 'plot_<position>.pdf'.
 
     Parameters:
         data_file (str): Path to the CSV file containing the spectral data.
