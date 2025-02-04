@@ -24,7 +24,6 @@ def drive_spectrometer(integration_time:float = 100.0, avaspecx64_dll_path:str =
     """
     device = Avaspec(avaspecx64_dll_path = avaspecx64_dll_path)
     device.set_integration_time(integration_time) # in ms
-    print('Measuring ...')
     data_raw = device.data()
     data = [float(i) for i in data_raw.split(",")]
     wavelength_raw = device.wavelength()
