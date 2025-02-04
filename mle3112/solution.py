@@ -125,7 +125,7 @@ def calculate_integrated_intensity(wavelength, intensity) -> None:
     """
     return np.trapz(y=intensity, x=wavelength)
 
-def plot_integrated(data_file: str) -> None:
+def plot_integrated_intensity(data_file: str) -> None:
     """
     Plots integrated intensity and adsorptance from a CSV file containing spectral data.
     Parameters:
