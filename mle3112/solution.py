@@ -1,12 +1,15 @@
 # How to drive the motor
 """
 Author: Zeyu Deng (dengzeyu@gmail.com)
+
+Here is the solution to the tasks in the MLE3112 course.
 """
 import numpy as np
 import pandas as pd
 from mle3112.motor import drive_motor
 from mle3112.spectrometer import drive_spectrometer
-import os
+import matplotlib.pyplot as plt
+import ast
 
 def automated_measurement(serial_number:str,
                          start:float, end:float, step:float,
@@ -55,7 +58,7 @@ def automated_measurement(serial_number:str,
         drive_motor(start, serial_number, tol, max_num_failure, kinesis_path)
 
     step_count = 0
-    
+
     for position in np.unique(np.arange(start, end + step, step) % 360):
         step_count += 1
         print(f"Measuring at position: {position}")
@@ -68,3 +71,89 @@ def automated_measurement(serial_number:str,
         
     df = pd.DataFrame(measured_data, columns=['position1', 'wavelength', 'intensity'])
     df.to_csv(data_file, index=False, mode='w', header=True)
+
+
+def plot(data_file: str, positions:list) -> None:
+    """
+    Plots spectral data from a CSV file.
+
+    This function reads a CSV file specified by the data_file parameter. It expects the CSV to contain columns such as 'intensity', 'wavelength', and 'position'.
+    The 'intensity' and 'wavelength' columns are expected to be in string format that can be converted to Python objects using ast.literal_eval.
+    For each unique position in the data, the function plots the spectral data, labeling the plot with the position value.
+    It configures the plot with axis labels, a title, and a grid, then saves the plot as a PNG file named 'spectrum_position_<position>.png'.
+
+    Parameters:
+        data_file (str): Path to the CSV file containing the spectral data.
+        positions (list): List of positions to plot.
+
+    Returns:
+        None
+    """
+    # read data
+    df = pd.read_csv(data_file, index_col=0)
+    df['intensity'] = df['intensity'].apply(lambda x: ast.literal_eval(x))
+    df['wavelength'] = df['wavelength'].apply(lambda x: ast.literal_eval(x))
+
+    # Plot the spectrum for a few positions
+
+    for pos in positions:
+        df_pos = df[df['position'] == pos].iloc[0]
+        print(pos, df_pos)
+        plt.figure(figsize=(5, 5))
+        plt.plot(df_pos['wavelength'], df_pos['intensity'], label=f'Position {df_pos["position"]} degrees')
+
+        plt.xlabel('Wavelength (nm)', fontsize=14)
+        plt.ylabel('Intensity (a.u.)', fontsize=14)
+        plt.title(f'Spectrum at Position {pos} degrees', fontsize=16)
+        plt.grid(True, which='both', linestyle='--', linewidth=0.5)
+        plt.tight_layout()
+
+        # Save the plot
+        plt.savefig(f'spectrum_position_{pos}.pdf')
+        plt.close()
+
+
+def calculate_integrated_intensity(wavelength, intensity) -> None:
+    """
+    Calculate the integrated intensity from the wavelength and intensity data.
+    Parameters:
+    wavelength (List[float]): The list of wavelengths.
+    intensity (List[float]): The list of intensities.
+
+    Returns:
+    float: The integrated intensity.
+    """
+    return np.trapz(y=intensity, x=wavelength)
+
+def plot_integrated(data_file: str) -> None:
+    """
+    Plots integrated intensity and adsorptance from a CSV file containing spectral data.
+    Parameters:
+    data_file (str): Path to the CSV file containing the data.
+
+    Returns:
+    None
+    """
+    # read data
+    df = pd.read_csv(data_file, index_col=0)
+    df['intensity'] = df['intensity'].apply(lambda x: ast.literal_eval(x))
+    df['wavelength'] = df['wavelength'].apply(lambda x: ast.literal_eval(x))
+
+    # integrate wavelength
+    integrated_intensity = [calculate_integrated_intensity(wavelength, intensity) for wavelength, intensity in zip(df['wavelength'], df['intensity'])]
+    
+    # Create the plot
+    plt.figure(figsize=(5, 5))
+    plt.plot(df['position'], integrated_intensity, 'o-', markersize=8, linewidth=2, label='Integrated Data')
+
+    # Add legends for both y-axes
+    plt.xlabel('Position (degrees)', fontsize=14)
+    plt.ylabel('Integrated Data (a.u.)', fontsize=14)
+    plt.title('Position vs Integrated Data', fontsize=16)
+    plt.grid(True, which='both', linestyle='--', linewidth=0.5)
+    plt.xticks(fontsize=14)
+    plt.yticks(fontsize=14)
+    plt.tight_layout()
+    
+    # Save the plot
+    plt.savefig('integrated.pdf')
