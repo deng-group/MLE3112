@@ -109,7 +109,7 @@ def plot(data_file: str, positions:list) -> None:
         plt.tight_layout()
 
         # Save the plot
-        plt.savefig(f'spectrum_position_{pos}.pdf')
+        plt.savefig(f'plot_{pos}.pdf')
         plt.close()
 
 
