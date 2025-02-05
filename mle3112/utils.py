@@ -6,8 +6,8 @@ import logging
 """
 Author: Zeyu Deng (dengzeyu@gmail.com)
 """
-
 class Progress:
+
     """
     A class to track and display the progress of a task using logger.
 
@@ -48,6 +48,17 @@ class Progress:
                 fh = logging.FileHandler(log_filename, mode="a")
                 fh.setFormatter(file_formatter)
                 self.logger.addHandler(fh)
+
+    @classmethod
+    def from_current_measurement(cls,
+                                 start_idx, 
+                                 total, 
+                                 save_log=True, 
+                                 log_filename="measurement.log"):
+        progress = Progress(total, save_log, log_filename)
+        progress.current = start_idx
+        progress.logger.info(f"Continuing progress from {start_idx}/{total}")
+        return progress
         
     def update(self, progress, message=''):
         self.current = progress
@@ -59,7 +70,7 @@ class Progress:
     def _log_progress(self, elapsed_time, remaining_time, message):
         progress_percentage = (self.current / self.total) * 100
         log_message = (
-            f"{progress_percentage:.2f}% | {elapsed_time:.2f}s elapsed, "
+            f"{progress_percentage:.2f}% ({self.current}/{self.total}) | {elapsed_time:.2f}s elapsed, "
             f"{remaining_time:.2f}s remaining | {message}"
         )
         self.logger.info(log_message)

@@ -90,7 +90,7 @@ def plot(data_file: str, positions:list) -> None:
         None
     """
     # read data
-    df = pd.read_csv(data_file, index_col=0)
+    df = pd.read_csv(data_file)
     df['intensity'] = df['intensity'].apply(lambda x: ast.literal_eval(x))
     df['wavelength'] = df['wavelength'].apply(lambda x: ast.literal_eval(x))
 
@@ -123,7 +123,7 @@ def calculate_integrated_intensity(wavelength, intensity) -> None:
     Returns:
     float: The integrated intensity.
     """
-    return np.trapz(y=intensity, x=wavelength)
+    return np.trapezoid(y=intensity, x=wavelength)
 
 def plot_integrated_intensity(data_file: str) -> None:
     """
@@ -135,7 +135,7 @@ def plot_integrated_intensity(data_file: str) -> None:
     None
     """
     # read data
-    df = pd.read_csv(data_file, index_col=0)
+    df = pd.read_csv(data_file)
     df['intensity'] = df['intensity'].apply(lambda x: ast.literal_eval(x))
     df['wavelength'] = df['wavelength'].apply(lambda x: ast.literal_eval(x))
 

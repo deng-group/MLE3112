@@ -9,7 +9,8 @@ import time
 
 def drive_motor(position: float, serial_number: str, tol: float = 1e-3,
                 max_num_failure:int=10, 
-                kinesis_path:str = 'C:/Program Files/Thorlabs/Kinesis')->None:
+                kinesis_path:str = 'C:/Program Files/Thorlabs/Kinesis',
+                dry_run = False)->None:
     """
     Drives the motor to the specified position.
 
@@ -19,6 +20,7 @@ def drive_motor(position: float, serial_number: str, tol: float = 1e-3,
     tol (float, optional): The tolerance for the motor position. Default is 1e-3.
     max_num_failure (int, optional): The maximum number of allowed failures before giving up. Default is 10.
     kinesis_path (str, optional): The path to the Kinesis folder. Default is 'C:/Program Files/Thorlabs/Kinesis'.
+    dry_run (bool, optional): For testing, if True, the motor will not be moved. Default is False.
 
     Raises:
     RuntimeError: If the motor fails to reach the position after the maximum number of retries.
@@ -30,7 +32,8 @@ def drive_motor(position: float, serial_number: str, tol: float = 1e-3,
     failed_counter = 0
     for attempt in range(max_num_failure):
         try:
-            _drive_motor(position=position, serial_number=serial_number, tol=tol, kinesis_path=kinesis_path)
+            if not dry_run:
+                _drive_motor(position=position, serial_number=serial_number, tol=tol, kinesis_path=kinesis_path)
             break
         except ThorlabsError:
             failed_counter += 1
@@ -39,7 +42,10 @@ def drive_motor(position: float, serial_number: str, tol: float = 1e-3,
                 raise RuntimeError(f"Cannot fix this error by rerunning the program for {failed_counter} times! I want to give up!")
             continue
 
-def _drive_motor(position: float, serial_number: str, tol: float = 1e-3, kinesis_path = 'C:/Program Files/Thorlabs/Kinesis')->None:
+def _drive_motor(position: float, 
+                 serial_number: str, 
+                 tol: float = 1e-3, 
+                 kinesis_path = 'C:/Program Files/Thorlabs/Kinesis')->None:
     """
     Drives the motor to the specified position and waits until it reaches the desired tolerance.
 
