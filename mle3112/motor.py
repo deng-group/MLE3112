@@ -4,7 +4,6 @@ Email: dengzeyu@gmail.com
 """
 
 from devices.KDC101 import KDC101
-from msl.equipment.exceptions import ThorlabsError
 import time
 
 def drive_motor(position: float, serial_number: str, tol: float = 1e-3,
@@ -24,7 +23,6 @@ def drive_motor(position: float, serial_number: str, tol: float = 1e-3,
 
     Raises:
     RuntimeError: If the motor fails to reach the position after the maximum number of retries.
-    ThorlabsError: If an error specific to Thorlabs equipment occurs during motor operation.
 
     Returns:
     None
@@ -35,9 +33,9 @@ def drive_motor(position: float, serial_number: str, tol: float = 1e-3,
             if not dry_run:
                 _drive_motor(position=position, serial_number=serial_number, tol=tol, kinesis_path=kinesis_path)
             break
-        except ThorlabsError:
+        except Exception as e:
             failed_counter += 1
-            print(f'ThorlabsError encountered! Failed {failed_counter}/{max_num_failure} times. Trying again ...')
+            print(f'Error: {str(e)}. Failed {failed_counter}/{max_num_failure} times. Trying again ...')
             if failed_counter >= max_num_failure:
                 raise RuntimeError(f"Cannot fix this error by rerunning the program for {failed_counter} times! I want to give up!")
             continue
