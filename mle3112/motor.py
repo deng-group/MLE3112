@@ -43,7 +43,8 @@ def drive_motor(position: float, serial_number: str, tol: float = 1e-3,
 def _drive_motor(position: float, 
                  serial_number: str, 
                  tol: float = 1e-3, 
-                 kinesis_path = 'C:/Program Files/Thorlabs/Kinesis')->None:
+                 kinesis_path = 'C:/Program Files/Thorlabs/Kinesis',
+                 debug_info:bool=True)->None:
     """
     Drives the motor to the specified position and waits until it reaches the desired tolerance.
 
@@ -52,6 +53,7 @@ def _drive_motor(position: float,
         serial_number (str): The serial number or identifier for the motor.
         tol (float, optional): The tolerance within which the motor should reach the target position. Defaults to 1e-3.
         kinesis_path (str, optional): The path to the Kinesis folder. Defaults to 'C:/Program Files/Thorlabs/Kinesis'.
+        debug_info (bool, optional): If True, print debug information. Defaults to True.
 
     Returns:
         None
@@ -69,8 +71,10 @@ def _drive_motor(position: float,
     device.set_position(position)
 
     while abs((position - device.position() + 180) % 360 - 180) > tol: # The motor position is in the range of 0 to 360 degrees
-        time.sleep(0.5) # wait for 0.5 seconds
-        print(f"Waiting for the motor ({serial_number}) to go to position: {position}, current position {device.position()}")
-    time.sleep(1) # wait for 1 second
-    print(f'Final motor: {serial_number} at position: {device.position()}')
+        time.sleep(0.05) # wait for 0.5 seconds
+        if debug_info:
+            print(f"Waiting for the motor ({serial_number}) to go to position: {position}, current position {device.position()}")
+    time.sleep(0.05) # wait for 0.05 second
+    if debug_info:
+        print(f'Final motor: {serial_number} at position: {device.position()}')
     device.close()
