@@ -44,7 +44,7 @@ def _drive_motor(position: float,
                  serial_number: str, 
                  tol: float = 1e-3, 
                  kinesis_path = 'C:/Program Files/Thorlabs/Kinesis',
-                 debug_info:bool=True)->None:
+                 debug_info:bool=False)->None:
     """
     Drives the motor to the specified position and waits until it reaches the desired tolerance.
 
@@ -53,7 +53,7 @@ def _drive_motor(position: float,
         serial_number (str): The serial number or identifier for the motor.
         tol (float, optional): The tolerance within which the motor should reach the target position. Defaults to 1e-3.
         kinesis_path (str, optional): The path to the Kinesis folder. Defaults to 'C:/Program Files/Thorlabs/Kinesis'.
-        debug_info (bool, optional): If True, print debug information. Defaults to True.
+        debug_info (bool, optional): If True, print debug information. Defaults to False.
 
     Returns:
         None
