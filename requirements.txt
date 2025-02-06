@@ -1,1 +1,3 @@
 git+https://github.com/dengzeyu/NUS_experiment.git
+h5py
+unittest2
